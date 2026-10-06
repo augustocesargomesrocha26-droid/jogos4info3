@@ -20,6 +20,23 @@ app.get('/jogos', async (req, res) => {
     } 
 });
 
+app.get('/jogos/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const jogo = await manipularDB({ id }, getJogo);
+        
+        if (jogo == null) {
+            res.status(404).json('jogo não encontrado no banco de dados!');
+        } else {
+            res.status(200).json(jogo)
+        }
+    } catch (e) {
+        console.error(e.message)
+    } 
+});
+
+
 app.listen(3000, async () => {
     console.log(`Servidor rodando em http://localhost:3000`);
 });
