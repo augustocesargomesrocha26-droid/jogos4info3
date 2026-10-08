@@ -36,7 +36,84 @@ app.get('/jogos/:id', async (req, res) => {
     } 
 });
 
+app.post('/jogos', async (req, res) => {
+    try {
+        const jogo = req.body.jogo;
+        const todosOsjogos = await manipularDB({}, getJogos);
+        let valido = true;
+
+        for (let a of todosOsjogos) {
+            if (a.nome == jogo.nome) {
+                valido = false;
+            }
+        }
+
+        if (valido) {
+            const jogoAdicionado = await manipularDB(jogo, createJogo)
+    
+            if (jogoAdicionado == null) {
+                res.status(404).json('Não foi possível adicionar o jogo no banco de dados!');
+            } else {
+                res.status(201).json(jogoAdicionado);
+            }
+        } else {
+            res.status(409).json(`O email ${jogo.email} já está registrado no banco de dados!`);
+        }
+    } catch (e) {
+        console.error(e);
+    }
+});
+
+
+
+app.delete('/jogos/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const resposta = await manipularDB({ id }, mongo.deleteUsuario);
+    
+        if (resposta == null) {
+            res.status(404).json('jogo não encontrado no banco de dados!');
+        } else {
+            res.status(200).json(`jogo ${id} deletado do banco de dados!`);
+        }
+    } catch (e) {
+        console.error(e.message)
+    }
+})
+
+
+app.put('/jogos/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const jogo = req.body.jogo;
+        const jogoExistente = await manipularDB({ id }, mongo.getUsuario)
+    
+        if (jogoExistente == null) {
+            res.status(404).json('jogo não encontrado no banco de dados!');
+        } else {
+            for (let [chave, valor] of Object.entries(jogo)){
+                if (valor == ''){
+                    delete jogoExistente[chave];
+                } else {
+                    jogoExistente[chave] = valor;
+                }
+            }
+
+            delete alunoExistente._id;
+            alunoExistente.id = id;
+    
+            const resposta = await manipularDB(alunoExistente, mongo.attUsuario)
+            res.status(200).json(resposta);
+        } 
+    } catch (e) {
+        console.error(e.message)
+    }
+});
+
+            
+
 
 app.listen(3000, async () => {
     console.log(`Servidor rodando em http://localhost:3000`);
 });
+
