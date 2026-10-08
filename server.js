@@ -57,7 +57,7 @@ app.post('/jogos', async (req, res) => {
                 res.status(201).json(jogoAdicionado);
             }
         } else {
-            res.status(409).json(`O email ${jogo.email} já está registrado no banco de dados!`);
+            res.status(409).json(`O jogo ${jogo.nome} já está registrado no banco de dados!`);
         }
     } catch (e) {
         console.error(e);
