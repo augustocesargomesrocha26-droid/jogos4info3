@@ -69,7 +69,7 @@ app.post('/jogos', async (req, res) => {
 app.delete('/jogos/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const resposta = await manipularDB({ id }, mongo.deleteUsuario);
+        const resposta = await manipularDB({ id }, deleteJogo);
     
         if (resposta == null) {
             res.status(404).json('jogo não encontrado no banco de dados!');
@@ -86,7 +86,7 @@ app.put('/jogos/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const jogo = req.body.jogo;
-        const jogoExistente = await manipularDB({ id }, mongo.getUsuario)
+        const jogoExistente = await manipularDB({ id }, getJogo)
     
         if (jogoExistente == null) {
             res.status(404).json('jogo não encontrado no banco de dados!');
@@ -99,10 +99,10 @@ app.put('/jogos/:id', async (req, res) => {
                 }
             }
 
-            delete alunoExistente._id;
-            alunoExistente.id = id;
+            delete jogoExistente._id;
+            jogoExistente.id = id;
     
-            const resposta = await manipularDB(alunoExistente, mongo.attUsuario)
+            const resposta = await manipularDB(jogoExistente, attJogo)
             res.status(200).json(resposta);
         } 
     } catch (e) {
