@@ -3,15 +3,15 @@ import { getJogo, getJogos, createJogo, deleteJogo, attJogo } from "../controlle
 
 export const routerJogos = express.Router()
 
-routerJogos.get('/jogos', getJogos);
+routerJogos.get('/', getJogos);
 
-routerJogos.get('/jogos/:id', getJogo);
+routerJogos.get('/:id', getJogo);
 
-routerJogos.post('/jogos', createJogo);
-
-
-
-routerJogos.delete('/jogos/:id', deleteJogo)
+routerJogos.post('/', createJogo);
 
 
-routerJogos.put('/jogos/:id', attJogo);
+
+routerJogos.delete('/:id', deleteJogo)
+
+
+routerJogos.put('/:id', attJogo);
