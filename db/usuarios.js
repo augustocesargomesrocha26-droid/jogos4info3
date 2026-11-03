@@ -7,13 +7,13 @@ export const deleteUsuario = async (con, usuario) => await con.db("Jogos4info3")
 export const createUsuario = async (con, usuario) => {
     await con.db("Jogos4info3").collection("usuarios").insertOne(usuario);
 
-    return `usuario ${usuario.nome} adicionado ao MongoDB!`;
+    return `usuario ${usuario.email} adicionado ao MongoDB!`;
 }
 
 export const attUsuario = async (con, usuario) => {
     const _id = new ObjectId(usuario.id);
     delete usuario.id;
-    await con.db("usuario4info3").collection("usuarios").replaceOne({ _id }, usuario);
+    await con.db("Jogos4info3").collection("usuarios").replaceOne({ _id }, usuario);
 
-    return `usuario ${usaurio.nome} atualizado no MongoDB!`;
+    return `usuario ${usuario.email} atualizado no MongoDB!`;
 }
