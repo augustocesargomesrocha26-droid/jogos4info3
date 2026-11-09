@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs"
 import { manipularDB } from "../db/db.js"
 import * as db from "../db/usuarios.js"
 
@@ -34,18 +35,22 @@ export const getUsuario = async (req, res) => {
 
 export const createUsuario = async (req, res) => {
     try {
-        const usuario = req.body.usuario;
+        const {email, senha} = req.body.usuario;
         const todosOsUsuarios = await manipularDB({}, db.getUsuarios);
         let valido = true;
 
         for (let a of todosOsUsuarios) {
-            if (a.email == usuario.email) {
+            if (a.email == email) {
                 valido = false;
             }
         }
 
         if (valido) {
-            const usuarioAdicionado = await manipularDB(usuario, db.createUsuario)
+            const salt = await bcrypt.genSalt();
+            const senhaCrypt = await bcrypt.hash(senha,salt)
+            const usuarioAdicionado = await manipularDB({
+                email, senha: senhaCrypt
+            }, db.createUsuario)
     
             if (usuarioAdicionado == null) {
                 res.status(404).json('Não foi possível adicionar o usuario no banco de dados!');
@@ -53,7 +58,7 @@ export const createUsuario = async (req, res) => {
                 res.status(201).json(usuarioAdicionado);
             }
         } else {
-            res.status(409).json(`O usuario ${usuario.email} já está registrado no banco de dados!`);
+            res.status(409).json(`O usuario ${email} já está registrado no banco de dados!`);
         }
     } catch (e) {
         console.error(e);
