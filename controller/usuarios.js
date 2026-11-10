@@ -36,16 +36,11 @@ export const getUsuario = async (req, res) => {
 export const createUsuario = async (req, res) => {
     try {
         const {email, senha} = req.body.usuario;
-        const todosOsUsuarios = await manipularDB({}, db.getUsuarios);
-        let valido = true;
-
-        for (let a of todosOsUsuarios) {
-            if (a.email == email) {
-                valido = false;
-            }
-        }
-
-        if (valido) {
+        const usuarioExiste = await manipularDB({}, db.getUsuarioEmail);
+        
+        if (usuarioExiste) {
+            res.status(409).json(`O usuario ${email} já está registrado no banco de dados!`);
+        } else {
             const salt = await bcrypt.genSalt();
             const senhaCrypt = await bcrypt.hash(senha,salt)
             const usuarioAdicionado = await manipularDB({
@@ -57,8 +52,6 @@ export const createUsuario = async (req, res) => {
             } else {
                 res.status(201).json(usuarioAdicionado);
             }
-        } else {
-            res.status(409).json(`O usuario ${email} já está registrado no banco de dados!`);
         }
     } catch (e) {
         console.error(e);

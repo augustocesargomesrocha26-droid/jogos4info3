@@ -17,3 +17,8 @@ export const attUsuario = async (con, usuario) => {
 
     return `usuario ${usuario.email} atualizado no MongoDB!`;
 }
+
+export const getUsuarioEmail=async (con, user) => await con
+    .db("Jogos4info3")
+    .collection("usuarios")
+    .findOne({email: user.email});
